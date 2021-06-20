@@ -1,45 +1,17 @@
-import numpy as np
-from PIL import Image, ImageOps
+from BinaryImage import BinaryImage
 
 
-def get_pixels(image):
-    black_and_white_image = image.convert('1')
-    black_and_white_pixels = np.asarray(black_and_white_image).astype(np.int)
-    return 1 - black_and_white_pixels
-
-
-def get_absolute_difference_between_pixels(pixels_a, pixels_b):
-    return np.abs(pixels_b - pixels_a)
-
-
-def get_similarity_percentages(pixels_a, pixels_b):
-    equality_matrix = np.equal(pixels_a, pixels_b).astype(int)
-    return np.mean(equality_matrix)
-
-
-def find_index_of_most_similar_pixels(pixels_to_check, possible_pixels_to_match: list, thresh=0.93):
-    highest_similarity_percentage = 0.0
+def find_index_of_most_similar_pixels(image_check, possible_images_to_match: list, thresh=0.93):
+    highest_similarity_score = 0.0
     index_of_highest_similarity = -1
-    for index, element in enumerate(possible_pixels_to_match):
-        similarity_percentage = get_similarity_percentages(pixels_to_check, element)
-        if similarity_percentage < thresh:
+    for index, element in enumerate(possible_images_to_match):
+        similarity_score = image_check.get_similarity_score(element)
+        if similarity_score < thresh:
             continue
-        if similarity_percentage > highest_similarity_percentage:
+        if similarity_score > highest_similarity_score:
             index_of_highest_similarity = index + 1
-            highest_similarity_percentage = similarity_percentage
+            highest_similarity_score = similarity_score
     return index_of_highest_similarity
-
-
-def show_pixels(pixels):
-    pixels = (pixels * 255).astype(np.uint8)
-    image = Image.fromarray(pixels)
-    image.show()
-
-
-def save_pixels_to_file(pixels, file_path):
-    pixels = (pixels * 255).astype(np.uint8)
-    image = Image.fromarray(pixels)
-    image.save(file_path)
 
 
 class TwoDimensionalMatrixSolver:
@@ -48,88 +20,92 @@ class TwoDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-        # if self.problem.name != "Basic Problem B-09":
+        # if self.problem.name != "Basic Problem B-10":
         #     return -1
         figures = self.problem.figures
 
-        image_a = Image.open(figures['A'].visualFilename)
-        image_b = Image.open(figures['B'].visualFilename)
-        image_c = Image.open(figures['C'].visualFilename)
-        image1 = Image.open(figures['1'].visualFilename)
-        image2 = Image.open(figures['2'].visualFilename)
-        image3 = Image.open(figures['3'].visualFilename)
-        image4 = Image.open(figures['4'].visualFilename)
-        image5 = Image.open(figures['5'].visualFilename)
-        image6 = Image.open(figures['6'].visualFilename)
+        image_a = BinaryImage(figures['A'].visualFilename)
+        image_b = BinaryImage(figures['B'].visualFilename)
+        image_c = BinaryImage(figures['C'].visualFilename)
+        image1 = BinaryImage(figures['1'].visualFilename)
+        image2 = BinaryImage(figures['2'].visualFilename)
+        image3 = BinaryImage(figures['3'].visualFilename)
+        image4 = BinaryImage(figures['4'].visualFilename)
+        image5 = BinaryImage(figures['5'].visualFilename)
+        image6 = BinaryImage(figures['6'].visualFilename)
 
-        pixels_a = get_pixels(image_a)
-        pixels_b = get_pixels(image_b)
-        pixels_c = get_pixels(image_c)
+        possible_solutions_images = [image1, image2, image3, image4, image5, image6]
 
-        pixels1 = get_pixels(image1)
-        pixels2 = get_pixels(image2)
-        pixels3 = get_pixels(image3)
-        pixels4 = get_pixels(image4)
-        pixels5 = get_pixels(image5)
-        pixels6 = get_pixels(image6)
-
-        possible_solution_pixels = [pixels1, pixels2, pixels3, pixels4, pixels5, pixels6]
-
-        if np.array_equal(pixels_a, pixels_b):
-            pixels_d = pixels_c
-            for index, element in enumerate(possible_solution_pixels):
-                if np.array_equal(pixels_d, element):
+        if image_a == image_b:
+            image_d = image_c
+            for index, element in enumerate(possible_solutions_images):
+                if image_d == element:
                     return index + 1
-        elif np.array_equal(pixels_a, pixels_c):
-            pixels_d = pixels_b
-            for index, element in enumerate(possible_solution_pixels):
-                if np.array_equal(pixels_d, element):
-                    return index + 1
-        else:
-            pixels_a_horizontal_mirror = get_pixels(ImageOps.mirror(image_a))
-            if get_similarity_percentages(pixels_a_horizontal_mirror, pixels_b) > 0.98:
-                pixels_c_horizontal_mirror = get_pixels(ImageOps.mirror(image_c))
-                index = find_index_of_most_similar_pixels(pixels_c_horizontal_mirror, possible_solution_pixels)
-                if index != -1:
-                    return index
-
-            if get_similarity_percentages(pixels_a_horizontal_mirror, pixels_c) > 0.97:
-                pixels_b_horizontal_mirror = get_pixels(ImageOps.mirror(image_b))
-                index = find_index_of_most_similar_pixels(pixels_b_horizontal_mirror, possible_solution_pixels)
-                if index != -1:
-                    return index
-
-            pixels_a_vertical_mirror = get_pixels(ImageOps.flip(image_a))
-
-            if get_similarity_percentages(pixels_a_vertical_mirror, pixels_b) > 0.98:
-                pixels_c_vertical_mirror = get_pixels(ImageOps.flip(image_c))
-                index = find_index_of_most_similar_pixels(pixels_c_vertical_mirror, possible_solution_pixels)
-                if index != -1:
-                    return index
-
-            if get_similarity_percentages(pixels_a_vertical_mirror, pixels_c) > 0.98:
-                pixels_b_vertical_mirror = get_pixels(ImageOps.flip(image_b))
-                index = find_index_of_most_similar_pixels(pixels_b_vertical_mirror, possible_solution_pixels)
-                if index != -1:
-                    return index
-
-            transform_ab = get_absolute_difference_between_pixels(pixels_a, pixels_b)
-            transform_ac = get_absolute_difference_between_pixels(pixels_a, pixels_c)
-
-            pixels_d1 = get_absolute_difference_between_pixels(transform_ab, pixels_c)
-            pixels_d2 = get_absolute_difference_between_pixels(transform_ac, pixels_b)
-
-            for index, element in enumerate(possible_solution_pixels):
-                if np.array_equal(pixels_d1, element) or np.array_equal(
-                        pixels_d2, element):
+        elif image_a == image_c:
+            pixels_d = image_b
+            for index, element in enumerate(possible_solutions_images):
+                if pixels_d == element:
                     return index + 1
 
-            index = find_index_of_most_similar_pixels(pixels_d1, possible_solution_pixels)
-            if index != -1:
-                # save_pixels_to_file(pixels_d1, r"C:\Users\micha\Desktop\rpm\ravens-progressive-matrix-solver\d1.png")
-                return index
-
-            index = find_index_of_most_similar_pixels(pixels_d2, possible_solution_pixels)
+        image_a_horizontal_mirror = image_a.get_horizontal_mirror()
+        if image_a_horizontal_mirror.get_similarity_score(image_b) > 0.98:
+            image_c_horizontal_mirror = image_c.get_horizontal_mirror()
+            index = find_index_of_most_similar_pixels(image_c_horizontal_mirror, possible_solutions_images)
             if index != -1:
                 return index
+
+        if image_a_horizontal_mirror.get_similarity_score(image_c) > 0.97:
+            image_b_horizontal_mirror = image_b.get_horizontal_mirror()
+            index = find_index_of_most_similar_pixels(image_b_horizontal_mirror, possible_solutions_images)
+            if index != -1:
+                return index
+
+        image_a_vertical_mirror = image_a.get_vertical_mirror()
+
+        if image_a_vertical_mirror.get_similarity_score(image_b) > 0.98:
+            image_c_vertical_mirror = image_c.get_vertical_mirror()
+            index = find_index_of_most_similar_pixels(image_c_vertical_mirror, possible_solutions_images)
+            if index != -1:
+                return index
+
+        if image_a_vertical_mirror.get_similarity_score(image_c) > 0.98:
+            image_b_vertical_mirror = image_b.get_vertical_mirror()
+            index = find_index_of_most_similar_pixels(image_b_vertical_mirror, possible_solutions_images)
+            if index != -1:
+                return index
+
+        a_black_white_ratio = image_a.get_black_and_white_ratio()
+        b_black_white_ratio = image_b.get_black_and_white_ratio()
+        black_white_ratio_difference_between_b_and_a = b_black_white_ratio - a_black_white_ratio
+        c_black_white_ratio = image_c.get_black_and_white_ratio()
+
+        # for possible_solution_index, possible_solution_pixels in enumerate(possible_solutions_pixels):
+        #     possible_solution_black_white_ratio = black_white_ratio(possible_solution_pixels)
+        #     black_white_ratio_difference_between_c_and_possible_solution = possible_solution_black_white_ratio - c_black_white_ratio
+        #     if black_white_ratio_difference_between_c_and_possible_solution == black_white_ratio_difference_between_b_and_a:
+        #         return possible_solution_index + 1
+
+        transform_ab = image_b - image_a
+        transform_ac = image_c - image_a
+
+        image_d1 = image_c - transform_ab
+        image_d2 = image_b - transform_ac
+
+        # image_a.show()
+        # image_b.show()
+        # transform_ab.show()
+        # image_c.show()
+        # image_d1.show()
+
+        for index, element in enumerate(possible_solutions_images):
+            if image_d1 == element or image_d2 == element:
+                return index + 1
+
+        index = find_index_of_most_similar_pixels(image_d1, possible_solutions_images)
+        if index != -1:
+            return index
+
+        index = find_index_of_most_similar_pixels(image_d2, possible_solutions_images)
+        if index != -1:
+            return index
         return -1
