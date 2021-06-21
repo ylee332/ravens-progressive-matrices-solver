@@ -11,15 +11,16 @@ def get_pixels_from_pil_image(image):
 
 
 class BinaryImage:
-    def __init__(self, image_file_path=None, pixels=None):
+    def __init__(self, name, image_file_path=None, pixels=None):
         if image_file_path and pixels:
             raise Exception("Both image_file_path and pixels passed to constructor")
 
         if image_file_path is not None:
-            self.pixels = cv2.cvtColor(cv2.imread(image_file_path), cv2.COLOR_BGR2GRAY)
+            # TODO: delete original image
+            self.original_image = cv2.imread(image_file_path)
+            self.pixels = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
             self.pixels = cv2.threshold(self.pixels, 127, 255, cv2.THRESH_BINARY)[1]
             self.pixels = (255 - self.pixels)
-            self.pixels = self.pixels/255
             self.pil_image = Image.fromarray(self.pixels)
 
         if pixels is not None:
@@ -28,21 +29,22 @@ class BinaryImage:
 
         pixels_x, pixels_y = self.pixels.shape
         self.number_of_pixels = pixels_x * pixels_y
+        self.name = name
 
     def get_horizontal_mirror(self):
-        return BinaryImage(pixels=get_pixels_from_pil_image(ImageOps.mirror(self.pil_image)))
+        return BinaryImage(name=f"{self.name} horizontal mirror",
+                           pixels=get_pixels_from_pil_image(ImageOps.mirror(self.pil_image)))
 
     def get_vertical_mirror(self):
-        return BinaryImage(pixels=get_pixels_from_pil_image(ImageOps.flip(self.pil_image)))
+        return BinaryImage(name=f"{self.name} vertical mirror",
+                           pixels=get_pixels_from_pil_image(ImageOps.flip(self.pil_image)))
 
     def get_similarity_score(self, other):
         equality_matrix = np.equal(self.pixels, other.pixels).astype(int)
         return np.mean(equality_matrix)
 
     def show(self):
-        pixels = (self.pixels * 255).astype(np.uint8)
-        tmp_image = Image.fromarray(pixels)
-        tmp_image.show()
+        cv2.imshow('xx', self.pixels)
 
     def save_to_file(self, file_path):
         self.pil_image.save(file_path)
@@ -53,18 +55,24 @@ class BinaryImage:
         return number_of_black_pixels / float(self.number_of_pixels)
 
     def get_contours(self):
-        contours, hierarchy = cv2.findContours(self.pixels, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contours, hierarchy = cv2.findContours(image=self.pixels, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
         return contours
 
-    def show_image_with_contours(self):
+    def get_outer_contours(self):
         contours = self.get_contours()
-        image = cv2.drawContours(self.pixels, contours, -1, (255, 0, 0), 2)
-        plot.imshow(image)
-        plot.show()
+        return contours
+
+
+    def show_image_with_contours(self):
+        outer_contours = self.get_outer_contours()
+        image_copy = self.original_image
+        cv2.drawContours(image=image_copy, contours=outer_contours, contourIdx=-1, color=(0, 0, 255), thickness=1,
+                         lineType=cv2.LINE_AA)
+        cv2.imshow('None approximation', image_copy)
+        cv2.waitKey(0)
 
     def __eq__(self, other):
         return np.array_equal(self.pixels, other.pixels)
 
     def __sub__(self, other):
-        x = np.subtract(self.pixels, other.pixels)
-        return BinaryImage(pixels=np.abs(x))
+        return BinaryImage(name=f"{self.name} - {other.name}", pixels=cv2.absdiff(self.pixels, other.pixels))

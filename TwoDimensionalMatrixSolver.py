@@ -20,19 +20,19 @@ class TwoDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-        # if self.problem.name != "Basic Problem B-10":
+        # if self.problem.name != "Basic Problem B-09":
         #     return -1
         figures = self.problem.figures
 
-        image_a = BinaryImage(figures['A'].visualFilename)
-        image_b = BinaryImage(figures['B'].visualFilename)
-        image_c = BinaryImage(figures['C'].visualFilename)
-        image1 = BinaryImage(figures['1'].visualFilename)
-        image2 = BinaryImage(figures['2'].visualFilename)
-        image3 = BinaryImage(figures['3'].visualFilename)
-        image4 = BinaryImage(figures['4'].visualFilename)
-        image5 = BinaryImage(figures['5'].visualFilename)
-        image6 = BinaryImage(figures['6'].visualFilename)
+        image_a = BinaryImage(name='A', image_file_path=figures['A'].visualFilename)
+        image_b = BinaryImage(name='B', image_file_path=figures['B'].visualFilename)
+        image_c = BinaryImage(name='C', image_file_path=figures['C'].visualFilename)
+        image1 = BinaryImage(name='1', image_file_path=figures['1'].visualFilename)
+        image2 = BinaryImage(name='2', image_file_path=figures['2'].visualFilename)
+        image3 = BinaryImage(name='3', image_file_path=figures['3'].visualFilename)
+        image4 = BinaryImage(name='4', image_file_path=figures['4'].visualFilename)
+        image5 = BinaryImage(name='5', image_file_path=figures['5'].visualFilename)
+        image6 = BinaryImage(name='6', image_file_path=figures['6'].visualFilename)
 
         possible_solutions_images = [image1, image2, image3, image4, image5, image6]
 
@@ -79,23 +79,20 @@ class TwoDimensionalMatrixSolver:
         black_white_ratio_difference_between_b_and_a = b_black_white_ratio - a_black_white_ratio
         c_black_white_ratio = image_c.get_black_and_white_ratio()
 
-        # for possible_solution_index, possible_solution_pixels in enumerate(possible_solutions_pixels):
-        #     possible_solution_black_white_ratio = black_white_ratio(possible_solution_pixels)
-        #     black_white_ratio_difference_between_c_and_possible_solution = possible_solution_black_white_ratio - c_black_white_ratio
-        #     if black_white_ratio_difference_between_c_and_possible_solution == black_white_ratio_difference_between_b_and_a:
-        #         return possible_solution_index + 1
+        for possible_solution_index, possible_solution_image in enumerate(possible_solutions_images):
+            possible_solution_black_white_ratio = possible_solution_image.get_black_and_white_ratio()
+            black_white_ratio_difference_between_c_and_possible_solution = possible_solution_black_white_ratio - c_black_white_ratio
+            if black_white_ratio_difference_between_c_and_possible_solution == black_white_ratio_difference_between_b_and_a:
+                return possible_solution_index + 1
+
+        # for possible_solutions_image in possible_solutions_images:
+        #     possible_solutions_image.show_image_with_contours()
 
         transform_ab = image_b - image_a
         transform_ac = image_c - image_a
 
         image_d1 = image_c - transform_ab
         image_d2 = image_b - transform_ac
-
-        # image_a.show()
-        # image_b.show()
-        # transform_ab.show()
-        # image_c.show()
-        # image_d1.show()
 
         for index, element in enumerate(possible_solutions_images):
             if image_d1 == element or image_d2 == element:
