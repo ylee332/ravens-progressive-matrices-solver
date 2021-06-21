@@ -39,12 +39,17 @@ class BinaryImage:
         return BinaryImage(name=f"{self.name} vertical mirror",
                            pixels=get_pixels_from_pil_image(ImageOps.flip(self.pil_image)))
 
+    def get_rotation(self):
+        return BinaryImage(name=f"{self.name} rotated by 270 degrees",
+                           pixels=get_pixels_from_pil_image(Image.Image.rotate(self.pil_image, 270)))
+
     def get_similarity_score(self, other):
         equality_matrix = np.equal(self.pixels, other.pixels).astype(int)
         return np.mean(equality_matrix)
 
     def show(self):
-        cv2.imshow('xx', self.pixels)
+        image = Image.fromarray(self.pixels)
+        image.show()
 
     def save_to_file(self, file_path):
         self.pil_image.save(file_path)

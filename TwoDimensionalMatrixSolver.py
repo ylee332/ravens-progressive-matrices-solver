@@ -20,6 +20,8 @@ class TwoDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
+        # if self.problem.name != "Challenge Problem B-01":
+        #     return -1
         figures = self.problem.figures
 
         image_a = BinaryImage(name='A', image_file_path=figures['A'].visualFilename)
@@ -77,6 +79,14 @@ class TwoDimensionalMatrixSolver:
         if image_a_with_filled_outer_contours.get_similarity_score(image_b) > 0.95:
             image_c_with_filled_outer_contours = image_c.get_outer_contours_filled()
             index = find_index_of_most_similar_pixels(image_c_with_filled_outer_contours, possible_solutions_images)
+            if index != -1:
+                return index
+
+        image_a_rotated_by_270_degrees = image_a.get_rotation()
+        image_a_rotated_by_270_degrees.show()
+        if image_a_rotated_by_270_degrees.get_similarity_score(image_b) > 0.96:
+            image_c_rotated_by_270_degrees = image_c.get_rotation()
+            index = find_index_of_most_similar_pixels(image_c_rotated_by_270_degrees, possible_solutions_images)
             if index != -1:
                 return index
 
