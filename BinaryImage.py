@@ -54,17 +54,19 @@ class BinaryImage:
         number_of_black_pixels = self.number_of_pixels - number_of_white_pixels
         return number_of_black_pixels / float(self.number_of_pixels)
 
-    def get_contours(self):
+    def get_all_contours(self):
         contours, hierarchy = cv2.findContours(image=self.pixels, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
         return contours
 
-    def get_outer_contours(self):
-        contours = self.get_contours()
-        return contours
-
+    def get_outer_contours_filled(self):
+        all_contours = self.get_all_contours()
+        outer_contours = max(all_contours, key=cv2.contourArea)
+        filled = np.zeros(self.pixels.shape, dtype="uint8")
+        cv2.drawContours(filled, [outer_contours], -1, 255, -1)
+        return BinaryImage(name=f"{self.name} with filled outer contours", pixels=filled)
 
     def show_image_with_contours(self):
-        outer_contours = self.get_outer_contours()
+        outer_contours = self.get_all_contours()
         image_copy = self.original_image
         cv2.drawContours(image=image_copy, contours=outer_contours, contourIdx=-1, color=(0, 0, 255), thickness=1,
                          lineType=cv2.LINE_AA)

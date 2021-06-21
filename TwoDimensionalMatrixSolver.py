@@ -20,8 +20,6 @@ class TwoDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-        # if self.problem.name != "Basic Problem B-09":
-        #     return -1
         figures = self.problem.figures
 
         image_a = BinaryImage(name='A', image_file_path=figures['A'].visualFilename)
@@ -74,19 +72,13 @@ class TwoDimensionalMatrixSolver:
             if index != -1:
                 return index
 
-        a_black_white_ratio = image_a.get_black_and_white_ratio()
-        b_black_white_ratio = image_b.get_black_and_white_ratio()
-        black_white_ratio_difference_between_b_and_a = b_black_white_ratio - a_black_white_ratio
-        c_black_white_ratio = image_c.get_black_and_white_ratio()
+        image_a_with_filled_outer_contours = image_a.get_outer_contours_filled()
 
-        for possible_solution_index, possible_solution_image in enumerate(possible_solutions_images):
-            possible_solution_black_white_ratio = possible_solution_image.get_black_and_white_ratio()
-            black_white_ratio_difference_between_c_and_possible_solution = possible_solution_black_white_ratio - c_black_white_ratio
-            if black_white_ratio_difference_between_c_and_possible_solution == black_white_ratio_difference_between_b_and_a:
-                return possible_solution_index + 1
-
-        # for possible_solutions_image in possible_solutions_images:
-        #     possible_solutions_image.show_image_with_contours()
+        if image_a_with_filled_outer_contours.get_similarity_score(image_b) > 0.95:
+            image_c_with_filled_outer_contours = image_c.get_outer_contours_filled()
+            index = find_index_of_most_similar_pixels(image_c_with_filled_outer_contours, possible_solutions_images)
+            if index != -1:
+                return index
 
         transform_ab = image_b - image_a
         transform_ac = image_c - image_a
