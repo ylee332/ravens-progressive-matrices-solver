@@ -5,7 +5,7 @@ import cv2
 
 def get_pixels_from_pil_image(image):
     black_and_white_image = image.convert('L')
-    black_and_white_pixels = np.asarray(black_and_white_image).astype(np.int)
+    black_and_white_pixels = np.asarray(black_and_white_image).astype(np.uint8)
     return black_and_white_pixels
 
 
@@ -20,12 +20,11 @@ class BinaryImage:
             self.pixels = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
             self.pixels = cv2.threshold(self.pixels, 127, 255, cv2.THRESH_BINARY)[1]
             self.pixels = (255 - self.pixels)
-            self.pil_image = Image.fromarray(self.pixels)
 
         if pixels is not None:
-            self.pil_image = Image.fromarray(pixels)
             self.pixels = pixels
 
+        self.pil_image = Image.fromarray(np.asarray(self.pixels).astype(np.uint8))
         pixels_x, pixels_y = self.pixels.shape
         self.number_of_pixels = pixels_x * pixels_y
         self.name = name
