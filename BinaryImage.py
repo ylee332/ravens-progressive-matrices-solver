@@ -1,7 +1,6 @@
 import numpy as np
 from PIL import Image, ImageOps
 import cv2
-from matplotlib import pyplot as plot
 
 
 def get_pixels_from_pil_image(image):

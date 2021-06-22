@@ -83,7 +83,6 @@ class TwoDimensionalMatrixSolver:
                 return index
 
         image_a_rotated_by_270_degrees = image_a.get_rotation()
-        image_a_rotated_by_270_degrees.show()
         if image_a_rotated_by_270_degrees.get_similarity_score(image_b) > 0.96:
             image_c_rotated_by_270_degrees = image_c.get_rotation()
             index = find_index_of_most_similar_pixels(image_c_rotated_by_270_degrees, possible_solutions_images)
