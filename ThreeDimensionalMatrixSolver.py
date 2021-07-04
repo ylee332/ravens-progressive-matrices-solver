@@ -1,5 +1,6 @@
 from BinaryImage import BinaryImage
 from BinaryImageUtils import find_index_of_most_similar_pixels, find_indexes_of_images_with_same_objects_number
+from ImageAnalyzer import ImageAnalyzer
 
 
 class ThreeDimensionalMatrixSolver:
@@ -8,8 +9,8 @@ class ThreeDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-        # if self.problem.name != "Basic Problem C-07":
-        #     return -1
+    #     if self.problem.name != "Challenge Problem C-06":
+    #         return -1
         figures = self.problem.figures
 
         image_a = BinaryImage(name='A', image_file_path=figures['A'].visualFilename)
@@ -29,6 +30,8 @@ class ThreeDimensionalMatrixSolver:
         image7 = BinaryImage(name='7', image_file_path=figures['7'].visualFilename)
         image8 = BinaryImage(name='8', image_file_path=figures['8'].visualFilename)
 
+        # analyzer = ImageAnalyzer()
+        # analyzer.analyze(image_a)
         possible_solutions_images = [image1, image2, image3, image4, image5, image6, image7, image8]
 
         if image_a == image_b or image_a == image_c:
@@ -93,11 +96,5 @@ class ThreeDimensionalMatrixSolver:
             index = find_index_of_most_similar_pixels(image_g_horizontal_mirror, possible_solutions_images)
             if index != -1:
                 return index
-        #
-        # if image_a_horizontal_mirror.get_similarity_score(image_c) > 0.97:
-        #     image_b_horizontal_mirror = image_b.get_horizontal_mirror()
-        #     index = find_index_of_most_similar_pixels(image_b_horizontal_mirror, possible_solutions_images)
-        #     if index != -1:
-        #         return index
 
         return -1
