@@ -76,6 +76,46 @@ class BinaryImage:
         cv2.imshow('None approximation', image_copy)
         cv2.waitKey(0)
 
+    def count_not_nested_objects(self):
+        all_contours = self.get_all_contours()
+        return len(all_contours)
+
+    def get_black_pixels(self):
+        width, height = self.pixels.shape
+        black_pixels = []
+        for col in range(width):
+            for row in range(height):
+                pixel = self.pixels[col, row]
+                if pixel == 255:
+                    black_pixels.append((col, row))
+        return black_pixels
+
+    def get_min_max_x_coordinates(self):
+        black_pixels = self.get_black_pixels()
+        min_x = 200
+        max_x = -1
+
+        for x, _ in black_pixels:
+            if x < min_x:
+                min_x = x
+            if x > max_x:
+                max_x = x
+
+        return min_x, max_x
+
+    def get_min_max_y_coordinates(self):
+        black_pixels = self.get_black_pixels()
+        min_y = 200
+        max_y = -1
+
+        for _, y in black_pixels:
+            if y < min_y:
+                min_y = y
+            if y > max_y:
+                max_y = y
+
+        return min_y, max_y
+
     def __eq__(self, other):
         return np.array_equal(self.pixels, other.pixels)
 

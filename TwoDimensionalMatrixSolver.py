@@ -1,17 +1,5 @@
 from BinaryImage import BinaryImage
-
-
-def find_index_of_most_similar_pixels(image_check, possible_images_to_match: list, thresh=0.93):
-    highest_similarity_score = 0.0
-    index_of_highest_similarity = -1
-    for index, element in enumerate(possible_images_to_match):
-        similarity_score = image_check.get_similarity_score(element)
-        if similarity_score < thresh:
-            continue
-        if similarity_score > highest_similarity_score:
-            index_of_highest_similarity = index + 1
-            highest_similarity_score = similarity_score
-    return index_of_highest_similarity
+from BinaryImageUtils import find_index_of_most_similar_pixels
 
 
 class TwoDimensionalMatrixSolver:
@@ -20,8 +8,6 @@ class TwoDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-        # if self.problem.name != "Challenge Problem B-01":
-        #     return -1
         figures = self.problem.figures
 
         image_a = BinaryImage(name='A', image_file_path=figures['A'].visualFilename)
@@ -42,9 +28,9 @@ class TwoDimensionalMatrixSolver:
                 if image_d == element:
                     return index + 1
         elif image_a == image_c:
-            pixels_d = image_b
+            image_d = image_b
             for index, element in enumerate(possible_solutions_images):
-                if pixels_d == element:
+                if image_d == element:
                     return index + 1
 
         image_a_horizontal_mirror = image_a.get_horizontal_mirror()
