@@ -8,8 +8,8 @@ class ThreeDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-        if self.problem.name != "Basic Problem C-05":
-            return -1
+        # if self.problem.name != "Basic Problem C-07":
+        #     return -1
         figures = self.problem.figures
 
         image_a = BinaryImage(name='A', image_file_path=figures['A'].visualFilename)
@@ -80,12 +80,19 @@ class ThreeDimensionalMatrixSolver:
                             return index + 1
                     return indexes_of_images_with_same_objects_number[0] + 1
 
-        # image_a_horizontal_mirror = image_a.get_horizontal_mirror()
-        # if image_a_horizontal_mirror.get_similarity_score(image_b) > 0.98:
-        #     image_c_horizontal_mirror = image_c.get_horizontal_mirror()
-        #     index = find_index_of_most_similar_pixels(image_c_horizontal_mirror, possible_solutions_images)
-        #     if index != -1:
-        #         return index
+        image_a_vertical_mirror = image_a.get_vertical_mirror()
+        if image_a_vertical_mirror.get_similarity_score(image_g) > 0.98:
+            image_c_vertical_mirror = image_c.get_horizontal_mirror()
+            index = find_index_of_most_similar_pixels(image_c_vertical_mirror, possible_solutions_images)
+            if index != -1:
+                return index + 1
+
+        image_a_horizontal_mirror = image_a.get_horizontal_mirror()
+        if image_a_horizontal_mirror.get_similarity_score(image_c) > 0.98:
+            image_g_horizontal_mirror = image_g.get_horizontal_mirror()
+            index = find_index_of_most_similar_pixels(image_g_horizontal_mirror, possible_solutions_images)
+            if index != -1:
+                return index + 1
         #
         # if image_a_horizontal_mirror.get_similarity_score(image_c) > 0.97:
         #     image_b_horizontal_mirror = image_b.get_horizontal_mirror()
