@@ -8,7 +8,7 @@ class ThreeDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-        if self.problem.name != "Challenge Problem C-03":
+        if self.problem.name != "Basic Problem C-05":
             return -1
         figures = self.problem.figures
 
@@ -54,32 +54,29 @@ class ThreeDimensionalMatrixSolver:
         number_of_objects_in_image_b = image_b.count_not_nested_objects()
         number_of_objects_in_image_c = image_c.count_not_nested_objects()
         if number_of_objects_in_image_b - number_of_objects_in_image_a == number_of_objects_in_image_c - number_of_objects_in_image_b:
-
-            # number_of_objects_in_image_d = image_d.count_not_nested_objects()
-            # number_of_objects_in_image_e = image_e.count_not_nested_objects()
-            # number_of_objects_in_image_f = image_f.count_not_nested_objects()
-            # number_of_objects_in_second_row_delta = number_of_objects_in_image_e - number_of_objects_in_image_d
-
             number_of_objects_in_image_g = image_g.count_not_nested_objects()
             number_of_objects_in_image_h = image_h.count_not_nested_objects()
             number_of_objects_in_third_row_delta = number_of_objects_in_image_h - number_of_objects_in_image_g
 
-            if number_of_objects_in_third_row_delta > 0:
+            if number_of_objects_in_third_row_delta >= 1 or number_of_objects_in_third_row_delta < 0:
                 number_of_objects_in_possible_solution = number_of_objects_in_image_h + number_of_objects_in_third_row_delta
                 indexes_of_images_with_same_objects_number = find_indexes_of_images_with_same_objects_number(
                     number_of_objects_in_possible_solution,
                     possible_solutions_images)
                 if len(indexes_of_images_with_same_objects_number) > 0:
-                    min_max_x_black_coordinates_in_image_h = image_h.get_min_max_x_coordinates()
-                    min_max_y_black_coordinates_in_image_h = image_h.get_min_max_y_coordinates()
+                    min_x_black_in_image_g, max_x_black_in_image_g = image_g.get_min_max_x_coordinates()
+                    min_y_black_in_image_g, max_y_black_in_image_g = image_g.get_min_max_y_coordinates()
 
                     for index in indexes_of_images_with_same_objects_number:
                         element = possible_solutions_images[index]
-                        min_max_x = element.get_min_max_x_coordinates()
-                        min_max_y = element.get_min_max_y_coordinates()
+                        min_x, max_x = element.get_min_max_x_coordinates()
+                        min_y, max_y = element.get_min_max_y_coordinates()
 
-                        if min_max_x == min_max_x_black_coordinates_in_image_h\
-                                or min_max_y == min_max_y_black_coordinates_in_image_h:
+                        x_ok = (2 >= abs(min_x - min_x_black_in_image_g) >= 0 and (2 >= abs(
+                                max_x - max_x_black_in_image_g) >= 0))
+                        y_ok = (2 >= abs(min_y - min_y_black_in_image_g) >= 0 and (2 >= abs(
+                            max_y - max_y_black_in_image_g) >= 0))
+                        if x_ok or y_ok:
                             return index + 1
                     return indexes_of_images_with_same_objects_number[0] + 1
 
@@ -95,21 +92,5 @@ class ThreeDimensionalMatrixSolver:
         #     index = find_index_of_most_similar_pixels(image_b_horizontal_mirror, possible_solutions_images)
         #     if index != -1:
         #         return index
-        #
-        # image_a_vertical_mirror = image_a.get_vertical_mirror()
-        #
-        # if image_a_vertical_mirror.get_similarity_score(image_b) > 0.98:
-        #     image_c_vertical_mirror = image_c.get_vertical_mirror()
-        #     index = find_index_of_most_similar_pixels(image_c_vertical_mirror, possible_solutions_images)
-        #     if index != -1:
-        #         return index
-        #
-        # if image_a_vertical_mirror.get_similarity_score(image_c) > 0.98:
-        #     image_b_vertical_mirror = image_b.get_vertical_mirror()
-        #     index = find_index_of_most_similar_pixels(image_b_vertical_mirror, possible_solutions_images)
-        #     if index != -1:
-        #         return index
-        #
-        # image_a_with_filled_outer_contours = image_a.get_outer_contours_filled()
 
         return -1

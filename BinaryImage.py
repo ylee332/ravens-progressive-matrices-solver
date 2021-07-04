@@ -1,7 +1,9 @@
 import numpy as np
 from PIL import Image, ImageOps
 import cv2
-
+from skimage import filters, measure
+from scipy import ndimage
+import matplotlib.pyplot as plt
 
 def get_pixels_from_pil_image(image):
     black_and_white_image = image.convert('L')
@@ -69,23 +71,24 @@ class BinaryImage:
         return BinaryImage(name=f"{self.name} with filled outer contours", pixels=filled)
 
     def show_image_with_contours(self):
-        outer_contours = self.get_all_contours()
+        all_contours = self.get_all_contours()
         image_copy = self.original_image
-        cv2.drawContours(image=image_copy, contours=outer_contours, contourIdx=-1, color=(0, 0, 255), thickness=1,
+        cv2.drawContours(image=image_copy, contours=all_contours, contourIdx=-1, color=(0, 0, 255), thickness=1,
                          lineType=cv2.LINE_AA)
         cv2.imshow('None approximation', image_copy)
         cv2.waitKey(0)
 
     def count_not_nested_objects(self):
-        all_contours = self.get_all_contours()
-        return len(all_contours)
+        drops = ndimage.binary_fill_holes(self.pixels)
+        labels = measure.label(drops)
+        return labels.max()
 
     def get_black_pixels(self):
         width, height = self.pixels.shape
         black_pixels = []
         for col in range(width):
             for row in range(height):
-                pixel = self.pixels[col, row]
+                pixel = self.pixels[row, col]
                 if pixel == 255:
                     black_pixels.append((col, row))
         return black_pixels
