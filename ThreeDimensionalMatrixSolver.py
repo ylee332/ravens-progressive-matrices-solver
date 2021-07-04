@@ -82,17 +82,17 @@ class ThreeDimensionalMatrixSolver:
 
         image_a_vertical_mirror = image_a.get_vertical_mirror()
         if image_a_vertical_mirror.get_similarity_score(image_g) > 0.98:
-            image_c_vertical_mirror = image_c.get_horizontal_mirror()
+            image_c_vertical_mirror = image_c.get_vertical_mirror()
             index = find_index_of_most_similar_pixels(image_c_vertical_mirror, possible_solutions_images)
             if index != -1:
-                return index + 1
+                return index
 
         image_a_horizontal_mirror = image_a.get_horizontal_mirror()
         if image_a_horizontal_mirror.get_similarity_score(image_c) > 0.98:
             image_g_horizontal_mirror = image_g.get_horizontal_mirror()
             index = find_index_of_most_similar_pixels(image_g_horizontal_mirror, possible_solutions_images)
             if index != -1:
-                return index + 1
+                return index
         #
         # if image_a_horizontal_mirror.get_similarity_score(image_c) > 0.97:
         #     image_b_horizontal_mirror = image_b.get_horizontal_mirror()
