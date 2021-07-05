@@ -1,9 +1,8 @@
 import numpy as np
 from PIL import Image, ImageOps
 import cv2
-from skimage import filters, measure
+from skimage import measure
 from scipy import ndimage
-import matplotlib.pyplot as plt
 
 def get_pixels_from_pil_image(image):
     black_and_white_image = image.convert('L')
