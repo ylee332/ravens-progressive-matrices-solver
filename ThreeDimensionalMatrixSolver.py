@@ -9,8 +9,8 @@ class ThreeDimensionalMatrixSolver:
         self.problem = problem
 
     def solve(self):
-    #     if self.problem.name != "Challenge Problem C-06":
-    #         return -1
+        # if self.problem.name != "Basic Problem C-03":
+        #     return -1
         figures = self.problem.figures
 
         image_a = BinaryImage(name='A', image_file_path=figures['A'].visualFilename)
