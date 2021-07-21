@@ -53,8 +53,7 @@ class BinaryImage:
         self.pil_image.save(file_path)
 
     def get_black_and_white_ratio(self):
-        number_of_white_pixels = np.count_nonzero(self.pixels)
-        number_of_black_pixels = self.number_of_pixels - number_of_white_pixels
+        number_of_black_pixels = self.get_number_of_black_pixels()
         return number_of_black_pixels / float(self.number_of_pixels)
 
     def get_all_contours(self):
@@ -122,9 +121,10 @@ class BinaryImage:
         return min_y, max_y
 
     def get_number_of_black_pixels(self):
-        number_of_white_pixels = np.count_nonzero(self.pixels)
-        number_of_black_pixels = self.number_of_pixels - number_of_white_pixels
-        return number_of_black_pixels
+        return cv2.countNonZero(self.pixels)
+
+    def xor(self, other):
+        return BinaryImage(name=f"{self.name} xor {other.name}", pixels=cv2.bitwise_xor(self.pixels, other.pixels))
 
     def __eq__(self, other):
         return np.array_equal(self.pixels, other.pixels)
