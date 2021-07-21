@@ -7,9 +7,10 @@ class ThreeDimensionalMatrixSolver:
 
     def __init__(self, problem):
         self.problem = problem
+        self.analyzer = ImageAnalyzer()
 
     def solve(self):
-        # if self.problem.name != "Basic Problem C-03":
+        # if self.problem.name != "Basic Problem E-03":
         #     return -1
         figures = self.problem.figures
 
@@ -30,9 +31,23 @@ class ThreeDimensionalMatrixSolver:
         image7 = BinaryImage(name='7', image_file_path=figures['7'].visualFilename)
         image8 = BinaryImage(name='8', image_file_path=figures['8'].visualFilename)
 
-        # analyzer = ImageAnalyzer()
-        # analyzer.analyze(image_a)
         possible_solutions_images = [image1, image2, image3, image4, image5, image6, image7, image8]
+
+        image_a_shape = self.analyzer.analyze(image_a)
+        image_b_shape = self.analyzer.analyze(image_b)
+        image_c_shape = self.analyzer.analyze(image_c)
+        number_of_pixels_in_image_a = image_a.get_number_of_black_pixels()
+        number_of_pixels_in_image_b = image_b.get_number_of_black_pixels()
+        number_of_pixels_in_image_c = image_c.get_number_of_black_pixels()
+
+        if image_a_shape == image_b_shape == image_c_shape and \
+                number_of_pixels_in_image_a == number_of_pixels_in_image_b == number_of_pixels_in_image_c:
+            image_h_shape = self.analyzer.analyze(image_h)
+            number_of_pixels_in_image_h = image_h.get_number_of_black_pixels()
+            for index, element in enumerate(possible_solutions_images):
+                if image_h_shape == self.analyzer.analyze(
+                        element) and number_of_pixels_in_image_h == element.get_number_of_black_pixels():
+                    return index + 1
 
         if image_a == image_b or image_a == image_c:
             image_i = image_h
@@ -51,6 +66,18 @@ class ThreeDimensionalMatrixSolver:
             image_i = image_f
             for index, element in enumerate(possible_solutions_images):
                 if image_i == element:
+                    return index + 1
+
+        image_a_with_b = image_a + image_b
+        number_of_black_pixels_in_image_ab = image_a_with_b.get_number_of_black_pixels()
+        number_of_black_pixels_in_image_c = image_c.get_number_of_black_pixels()
+        if abs(number_of_black_pixels_in_image_ab - number_of_black_pixels_in_image_c) < 80 and \
+                self.analyzer.analyze(image_a_with_b) == self.analyzer.analyze(image_c):
+            image_i = image_g + image_h
+            number_of_pixels_in_image_i = image_i.get_number_of_black_pixels()
+            for index, element in enumerate(possible_solutions_images):
+                a = element.get_number_of_black_pixels()
+                if abs(number_of_pixels_in_image_i - a) < 80:
                     return index + 1
 
         number_of_objects_in_image_a = image_a.count_not_nested_objects()
@@ -76,7 +103,7 @@ class ThreeDimensionalMatrixSolver:
                         min_y, max_y = element.get_min_max_y_coordinates()
 
                         x_ok = (2 >= abs(min_x - min_x_black_in_image_g) >= 0 and (2 >= abs(
-                                max_x - max_x_black_in_image_g) >= 0))
+                            max_x - max_x_black_in_image_g) >= 0))
                         y_ok = (2 >= abs(min_y - min_y_black_in_image_g) >= 0 and (2 >= abs(
                             max_y - max_y_black_in_image_g) >= 0))
                         if x_ok or y_ok:
@@ -96,5 +123,16 @@ class ThreeDimensionalMatrixSolver:
             index = find_index_of_most_similar_pixels(image_g_horizontal_mirror, possible_solutions_images)
             if index != -1:
                 return index
+
+        number_of_black_pixels_in_image_a = image_a.get_number_of_black_pixels()
+        number_of_black_pixels_in_image_b = image_b.get_number_of_black_pixels()
+        number_of_black_pixels_in_row = number_of_black_pixels_in_image_a + number_of_black_pixels_in_image_b + number_of_black_pixels_in_image_c
+        number_of_black_pixels_in_image_g = image_g.get_number_of_black_pixels()
+        number_of_black_pixels_in_image_h = image_h.get_number_of_black_pixels()
+        target_number_of_pixels_in_image_i = number_of_black_pixels_in_row - number_of_black_pixels_in_image_g - number_of_black_pixels_in_image_h
+
+        for index, element in enumerate(possible_solutions_images):
+            if abs(target_number_of_pixels_in_image_i - element.get_number_of_black_pixels()) < 100:
+                return index + 1
 
         return -1

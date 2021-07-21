@@ -121,8 +121,17 @@ class BinaryImage:
 
         return min_y, max_y
 
+    def get_number_of_black_pixels(self):
+        number_of_white_pixels = np.count_nonzero(self.pixels)
+        number_of_black_pixels = self.number_of_pixels - number_of_white_pixels
+        return number_of_black_pixels
+
     def __eq__(self, other):
         return np.array_equal(self.pixels, other.pixels)
 
     def __sub__(self, other):
         return BinaryImage(name=f"{self.name} - {other.name}", pixels=cv2.absdiff(self.pixels, other.pixels))
+
+    def __add__(self, other):
+        return BinaryImage(name=f"{self.name} + {other.name}", pixels=cv2.add(self.pixels, other.pixels))
+
