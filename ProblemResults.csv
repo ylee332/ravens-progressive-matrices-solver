@@ -12,7 +12,7 @@ Basic Problem B-10,3,Correct,3
 Basic Problem B-11,1,Correct,1
 Basic Problem B-12,1,Correct,1
 Basic Problem C-01,3,Correct,3
-Basic Problem C-02,7,Incorrect,4
+Basic Problem C-02,4,Correct,4
 Basic Problem C-03,4,Correct,4
 Basic Problem C-04,4,Incorrect,8
 Basic Problem C-05,3,Correct,3
@@ -20,11 +20,11 @@ Basic Problem C-06,-1,Skipped,7
 Basic Problem C-07,2,Correct,2
 Basic Problem C-08,5,Correct,5
 Basic Problem C-09,-1,Skipped,2
-Basic Problem C-10,-1,Skipped,7
+Basic Problem C-10,2,Incorrect,7
 Basic Problem C-11,4,Correct,4
 Basic Problem C-12,-1,Skipped,8
 Basic Problem D-01,3,Correct,3
-Basic Problem D-02,1,Correct,1
+Basic Problem D-02,5,Incorrect,1
 Basic Problem D-03,3,Correct,3
 Basic Problem D-04,-1,Skipped,1
 Basic Problem D-05,-1,Skipped,7
@@ -44,8 +44,8 @@ Basic Problem E-06,8,Correct,8
 Basic Problem E-07,3,Correct,3
 Basic Problem E-08,1,Correct,1
 Basic Problem E-09,5,Incorrect,7
-Basic Problem E-10,7,Incorrect,8
-Basic Problem E-11,-1,Skipped,5
+Basic Problem E-10,8,Correct,8
+Basic Problem E-11,5,Correct,5
 Basic Problem E-12,6,Correct,6
 Challenge Problem B-01,6,Correct,6
 Challenge Problem B-02,1,Correct,1
@@ -71,7 +71,7 @@ Challenge Problem C-09,-1,Skipped,7
 Challenge Problem C-10,-1,Skipped,3
 Challenge Problem C-11,4,Correct,4
 Challenge Problem C-12,1,Incorrect,2
-Challenge Problem D-01,-1,Skipped,2
+Challenge Problem D-01,5,Incorrect,2
 Challenge Problem D-02,1,Correct,1
 Challenge Problem D-03,1,Correct,1
 Challenge Problem D-04,1,Incorrect,6
@@ -94,4 +94,4 @@ Challenge Problem E-08,-1,Skipped,7
 Challenge Problem E-09,1,Correct,1
 Challenge Problem E-10,3,Incorrect,1
 Challenge Problem E-11,3,Correct,3
-Challenge Problem E-12,-1,Skipped,5
+Challenge Problem E-12,5,Correct,5

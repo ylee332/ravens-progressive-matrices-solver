@@ -10,7 +10,7 @@ class ThreeDimensionalMatrixSolver:
         self.analyzer = ImageAnalyzer()
 
     def solve(self):
-        # if self.problem.name != "Basic Problem E-08":
+        # if self.problem.name != "Challenge Problem E-12":
         #     return -1
         figures = self.problem.figures
 
@@ -70,7 +70,6 @@ class ThreeDimensionalMatrixSolver:
 
         image_a_with_b = image_a + image_b
         number_of_black_pixels_in_image_ab = image_a_with_b.get_number_of_black_pixels()
-        number_of_black_pixels_in_image_c = image_c.get_number_of_black_pixels()
         if abs(number_of_black_pixels_in_image_ab - number_of_black_pixels_in_image_c) < 80 and \
                 self.analyzer.analyze(image_a_with_b) == self.analyzer.analyze(image_c):
             image_i = image_g + image_h
@@ -153,7 +152,7 @@ class ThreeDimensionalMatrixSolver:
                 if abs(element.get_number_of_black_pixels() - target_black_pixels) < 80:
                     return index + 1
 
-        #adding images
+        # adding images
 
         sum_of_number_of_black_pixels_in_ab2 = (image_a + image_b).get_number_of_black_pixels()
         if abs(sum_of_number_of_black_pixels_in_ab2 - number_of_black_pixels_in_image_c) < 30:
@@ -176,30 +175,53 @@ class ThreeDimensionalMatrixSolver:
             if index != -1:
                 return index
 
-        #xor
-        # (image_a.xor(image_b)).show()
-        sum_of_number_of_black_pixels_in_xor_ab2 = (image_a.xor(image_b)).get_number_of_black_pixels()
+        diff1 = number_of_black_pixels_in_image_b - number_of_black_pixels_in_image_a
+        diff2 = number_of_black_pixels_in_image_c - number_of_black_pixels_in_image_b
+        if abs(diff1 - diff2) < 50:
+            target_black_pixels = number_of_black_pixels_in_image_h + diff2
+            for index, element in enumerate(possible_solutions_images):
+                if abs(element.get_number_of_black_pixels() - target_black_pixels) < 80:
+                    return index + 1
+
+        # diff1 = number_of_black_pixels_in_image_a - number_of_black_pixels_in_image_b
+        # diff2 = number_of_black_pixels_in_image_b - number_of_black_pixels_in_image_c
+        # if abs(diff1 - diff2) < 50:
+        #     target_black_pixels = number_of_black_pixels_in_image_h - diff2
+        #     for index, element in enumerate(possible_solutions_images):
+        #         if abs(element.get_number_of_black_pixels() - target_black_pixels) < 80:
+        #             return index + 1
+
+        # xor
+        sum_of_number_of_black_pixels_in_xor_ab2 = (image_a.xor_operation(image_b)).get_number_of_black_pixels()
         if abs(sum_of_number_of_black_pixels_in_xor_ab2 - number_of_black_pixels_in_image_c) < 250:
-            hg_xor = image_h.xor(image_g)
+            hg_xor = image_h.xor_operation(image_g)
             index = find_index_of_most_similar_pixels(hg_xor, possible_solutions_images)
             if index != -1:
                 return index
 
+        # and
+        sum_of_number_of_black_pixels_in_and_ab2 = (image_a.and_operation(image_b)).get_number_of_black_pixels()
+        if abs(sum_of_number_of_black_pixels_in_and_ab2 - number_of_black_pixels_in_image_c) < 250:
+            hg_and = image_h.and_operation(image_g)
+            index = find_index_of_most_similar_pixels(hg_and, possible_solutions_images)
+            if index != -1:
+                return index
 
-        # sum_of_number_of_black_pixels_in_xor_bc2 = (image_b.xor(image_c)).get_number_of_black_pixels()
-        # if abs(sum_of_number_of_black_pixels_in_xor_bc2 - number_of_black_pixels_in_image_a) < 30:
-        #     gh_minus = (image_h - image_g)
-        #     index = find_index_of_most_similar_pixels(gh_minus, possible_solutions_images)
-        #     if index != -1:
-        #         return index
-        #
-        # sum_of_number_of_black_pixels_in_ac2 = (image_a + image_c).get_number_of_black_pixels()
-        # if abs(sum_of_number_of_black_pixels_in_ac2 - number_of_black_pixels_in_image_b) < 30:
-        #     hg_minus = (image_h - image_g)
-        #     index = find_index_of_most_similar_pixels(hg_minus, possible_solutions_images)
-        #     if index != -1:
-        #         return index
+        # or
+        sum_of_number_of_black_pixels_in_or_ab2 = (image_a.or_operation(image_b)).get_number_of_black_pixels()
+        if abs(sum_of_number_of_black_pixels_in_or_ab2 - number_of_black_pixels_in_image_c) < 250:
+            hg_or = image_h.or_operation(image_g)
+            index = find_index_of_most_similar_pixels(hg_or, possible_solutions_images)
+            if index != -1:
+                return index
 
+        # not
+        sum_of_number_of_black_pixels_in_not_ab2 = (image_a.not_operation(image_b)).get_number_of_black_pixels()
+        if abs(sum_of_number_of_black_pixels_in_not_ab2 - number_of_black_pixels_in_image_c) < 250:
+            hg_not = image_h.not_operation(image_g)
+            index = find_index_of_most_similar_pixels(hg_not, possible_solutions_images)
+            if index != -1:
+                return index
 
         for index, element in enumerate(possible_solutions_images):
             if abs(target_number_of_pixels_in_image_i - element.get_number_of_black_pixels()) < 100:

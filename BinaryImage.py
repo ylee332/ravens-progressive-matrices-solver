@@ -123,8 +123,17 @@ class BinaryImage:
     def get_number_of_black_pixels(self):
         return cv2.countNonZero(self.pixels)
 
-    def xor(self, other):
+    def xor_operation(self, other):
         return BinaryImage(name=f"{self.name} xor {other.name}", pixels=cv2.bitwise_xor(self.pixels, other.pixels))
+
+    def and_operation(self, other):
+        return BinaryImage(name=f"{self.name} and {other.name}", pixels=cv2.bitwise_and(self.pixels, other.pixels))
+
+    def or_operation(self, other):
+        return BinaryImage(name=f"{self.name} or {other.name}", pixels=cv2.bitwise_or(self.pixels, other.pixels))
+
+    def not_operation(self, other):
+        return BinaryImage(name=f"{self.name} not {other.name}", pixels=cv2.bitwise_not(self.pixels, other.pixels))
 
     def __eq__(self, other):
         return np.array_equal(self.pixels, other.pixels)
